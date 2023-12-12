@@ -55,7 +55,7 @@ app.get("/protected", (req, res) =>
   res.send("Hello from protected route")
 })
 
-app.get("/save-did", async (req, res) => {
+app.post("/save-did", async (req, res) => {
   try {
     const cred = new Cred(req.body)
     let response = await cred.save()
