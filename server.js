@@ -10,8 +10,9 @@ mongoose.connect('mongodb://localhost:27017/', {
   dbName: 'auth',
   useNewUrlParser: true,
   useUnifiedTopology: true
-}, err => err ? console.log(err) :
-  console.log('Connected to auth database'));
+})
+.then(console.log("Connected to DB!"))
+.catch(err => console.log(err))
 
 // Schema for credentials of users
 const CredSchema = new mongoose.Schema({
