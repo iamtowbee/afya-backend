@@ -1,3 +1,4 @@
+require("dotenv").config()
 const express = require("express")
 const cors = require("cors")
 const axios = require("axios")
@@ -6,10 +7,8 @@ const mongodb = require("mongodb")
 
 // To connect with your mongoDB database
 const mongoose = require('mongoose');
-mongoose.connect('mongodb://localhost:27017/', {
+mongoose.connect(process.env.MONGO_URL, {
   dbName: 'auth',
-  useNewUrlParser: true,
-  useUnifiedTopology: true
 })
 .then(console.log("Connected to DB!"))
 .catch(err => console.log(err))
