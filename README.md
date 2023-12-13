@@ -1,12 +1,8 @@
-Certainly! Below is a simple template for your README.md file. It provides a brief introduction, information on how to use the two routes, and examples.
-
----
-
-# Simple DID API Documentation
+# Afya DID API Documentation
 
 ## Introduction
 
-Welcome to the Afya DID API! This API provides functionality for generating and checking encrypted Decentralized Identifiers (DIDs). DIDs are unique identifiers associated with a particular entity or user. The API utilizes secure 256-bit encryption `(AES-256-CBC)` to secure DIDs.
+Welcome to the Afya DID API! This API provides functionality for generating and checking encrypted Decentralized Identifiers (DIDs). DIDs are unique identifiers associated with a particular entity or user. The API utilizes secure 256-bit encryption, `AES-256-CBC`, to secure DIDs.
 
 ## API Base URL
 
@@ -24,10 +20,11 @@ Endpoint: `/gen-did`
 
 **Parameters:**
 - `secretKey` (Query Parameter): A 6-digit sequence serving as the secret key for encryption.
+- `email` (Query Parameter): Email address for uniqueness
 
 **Example Request:**
 ```bash
-curl -X GET "https://your-api-base-url.com/gen-did?secretKey=123456"
+curl -X GET "https://your-api-base-url.com/gen-did?secretKey=123456&email=example@mail.com"
 ```
 
 **Example Response:**
@@ -61,6 +58,12 @@ curl -X GET "https://your-api-base-url.com/check-did?secretKey=123456&encryptedD
 }
 ```
 
+## TODO (Afya DID API v2)
+
+In `v2`, we'll be creating an endpoint that will enable users to create their DID using just an email and secet key (6 digit PIN) and encrypt it, then store the encrypted DID alongside the auth credentials into a MongoDB datastore.
+
+The API will be more robust and will form a core feature in our decentralized EHR solution. The preview is available on the `beta` branch of this repo.
+
 ## Error Handling
 
 - If the provided secret key is not a 6-digit sequence, the API will return an HTTP 400 Bad Request response with an error message.
@@ -75,5 +78,3 @@ curl -X GET "https://your-api-base-url.com/check-did?secretKey=123456&encryptedD
 If you encounter any issues or have suggestions for improvements, please feel free to create an issue or submit a pull request.
 
 ---
-
-You can customize this template further based on your specific details, including additional information about the API, authentication, error responses, and any other relevant details.
