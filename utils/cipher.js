@@ -23,7 +23,7 @@ exports.encryptDID = (did, userSecretKey) =>
   encryptedDID += cipher.final('hex');
 
   // Concatenate IV with the encrypted data
-  return {"finalCipher": iv + encryptedDID};
+  return iv + encryptedDID;
 }
 
 // Function to decrypt the DID
