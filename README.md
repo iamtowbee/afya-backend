@@ -6,7 +6,7 @@ Welcome to the Afya DID API! This API provides functionality for generating and 
 
 ## API Base URL
 
-The base URL for the API is `https://your-api-base-url.com`.
+The base URL for the API is `https://afya-auth0.onrender.com`.
 
 ## Routes
 
@@ -23,7 +23,7 @@ Endpoint: `/gen-did`
 - 
 **Example Request:**
 ```bash
-curl -X GET "https://your-api-base-url.com/gen-did?secretKey=123456"
+curl -X GET "https://afya-auth0.onrender.com/gen-did?secretKey=123456"
 ```
 
 **Example Response:**
@@ -47,7 +47,7 @@ Endpoint: `/check-did`
 
 **Example Request:**
 ```bash
-curl -X GET "https://your-api-base-url.com/check-did?secretKey=123456&encryptedDID=aA12sDeR..."
+curl -X GET "https://afya-auth0.onrender.com/check-did?secretKey=123456&encryptedDID=aA12sDeR..."
 ```
 
 **Example Response:**
@@ -61,7 +61,7 @@ curl -X GET "https://your-api-base-url.com/check-did?secretKey=123456&encryptedD
 
 In `v2`, we're working to build an API endpoint that will enable users to create their DID using their email and secret key (6-digit PIN) and encrypt it using a combination of the user's secret and a server secret stored in an encrypted environment variable (.env) file, then store the encrypted DID alongside the auth credentials into a MongoDB datastore.
 
-The API will be more robust and will form a core feature in our decentralized EHR solution. The preview is available on the `beta` branch of this repo. While this seems like a tangent from our core idea of enablijg users to take control of their medical records, it's a foundation. Hence, we need to get the auth part right, as we're building for a positive UX, and as such, onboarding must be as seamless and painless as possible. 
+The API will be more robust and will form a core feature in our decentralized EHR solution. The preview is available already in this repo. While this seems like a tangent from our core idea of enablijg users to take control of their medical records, it's a foundation. Hence, we need to get the auth part right, as we're building for a positive UX, and as such, onboarding must be as seamless and painless as possible. The rest os the development lifecycle is building CRUD endpoints using Web5-js SDK.
 
 ## Error Handling
 
