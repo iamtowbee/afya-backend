@@ -35,7 +35,7 @@ router.get("/gen-did", async (req, res, next) =>
 })
 
 router.get("/check-did", async (req, res, next) => {
-  const { secretKey,  encryptDID} = req.query
+  const { secretKey,  encryptedDID} = req.query
   console.log(req.query)
 
   if (secretKey.length !== 6 || isNaN(Number(secretKey)))
@@ -47,7 +47,9 @@ router.get("/check-did", async (req, res, next) => {
     const userSecretKey = secretKey
     // Later, when you need to retrieve the DID
     const decryptedDID = cipher.decryptDID(encryptedDID, userSecretKey);
-    console.log('Decrypted DID:', decryptedDID);
+    
+    // Send decrypted DID to client side
+    res.json({ "decryptedDID": decryptedDID })
   } catch (error) {
     next(error)
   }
