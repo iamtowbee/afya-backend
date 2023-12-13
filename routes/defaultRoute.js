@@ -8,31 +8,30 @@ const cipher = require("../utils/cipher")
 
 const { Web5 } = require('@web5/api');
 
-// Test route
-// router.get("/test", async (req, res, next) => {
-//   const { web5, did } = await Web5.connect();
-//   console.log(did)
-//   res.json({"did": did})
-// })
+router.get("/gen-did", async (req, res, next) =>
+{
+  const { secretKey } = req.query
 
-// router.get("/gen-did", async (req, res, next) =>
-// {
-//   try
-//   {
-//     //TODO: User secret, request from client-side as a 6-digit PIN (probably alphanumeric for security reasons)
-//     const userSecretKey = "nyan-cat" // Example user secret key
+  if (secretKey.length !== 6 || isNaN(Number(secretKey)))
+  {
+    throw new ApiError("Invalid credentials!", 400)
+  }
+  try
+  {
+    //TODO: User secret, request from client-side as a 6-digit PIN (probably alphanumeric for security reasons)
+    const userSecretKey = secretKey
 
-//     // Create and encrypt new DID
-//     const { web5, did } = await Web5.connect();
-//     const encryptedDID = cipher.encryptDID(did, userSecretKey);
+    // Create and encrypt new DID
+    const { web5, did } = await Web5.connect();
+    const encryptedDID = cipher.encryptDID(did, userSecretKey);
 
-//     // Send DID to client side for user to copy
-//     res.json({"did": did})
-//   } catch (error)
-//   {
-//     next(error)
-//   }
-// })
+    // Send DID to client side for user to copy
+    res.json({ "encryptedDID": did })
+  } catch (error)
+  {
+    next(error)
+  }
+})
 
 // router.get("/check-did", async (req, res, next) => {
 //   try {
@@ -60,7 +59,8 @@ router.post("/did", async (req, res, next) =>
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
     // Test the email address against the regex
-    if (emailRegex.test(req.body.email)) {
+    if (emailRegex.test(req.body.email))
+    {
       throw new ApiError("Invalid credentials (email)!", 401)
     }
 
@@ -76,7 +76,8 @@ router.post("/did", async (req, res, next) =>
 
       //TODO: User secret, request from frontend as a 6-digit PIN (probably alphanumeric for security reasons)✅
 
-      if (secret.length === 6 || isNaN(Number(secret))) {
+      if (secret.length === 6 || isNaN(Number(secret)))
+      {
         throw new ApiError("Invalid credentials!", 401)
       }
 
@@ -91,9 +92,9 @@ router.post("/did", async (req, res, next) =>
 
       // Save encrypted DID to Mongo store
       await newCred.save();
-      res.status(201).json({ 
-      "did": did, 
-      "message": "Credentials registered successfully!"
+      res.status(201).json({
+        "did": did,
+        "message": "Credentials registered successfully!"
       })
     }
     else if (action === "check")
