@@ -114,14 +114,14 @@ router.post("/did", async (req, res, next) =>
       const credExists = await Cred.findOne({ email });
       if (credExists)
       {
-        res.status(200).send("User already exists!");
+        res.status(200).send("Credential already exists!");
       } else
       {
-        throw new ApiError("User not found!", 404)
+        throw new ApiError("Credential not found!", 404)
       }
     } else
     {
-      throw new ApiError("User action not specified!", 401)
+      throw new ApiError("Action not specified!", 401)
     }
   }
   catch (err)
