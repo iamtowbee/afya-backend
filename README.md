@@ -59,9 +59,9 @@ curl -X GET "https://your-api-base-url.com/check-did?secretKey=123456&encryptedD
 
 ## TODO (Afya DID API v2)
 
-In `v2`, we're working to build an API endpoint that will enable users to create their DID using their email and secet key (6 digit PIN) and encrypt it, then store the encrypted DID alongside the auth credentials into a MongoDB datastore.
+In `v2`, we're working to build an API endpoint that will enable users to create their DID using their email and secret key (6-digit PIN) and encrypt it using a combination of the user's secret and a server secret stored in an encrypted environment variable (.env) file, then store the encrypted DID alongside the auth credentials into a MongoDB datastore.
 
-The API will be more robust and will form a core feature in our decentralized EHR solution. The preview is available on the `beta` branch of this repo. While this seems like a tangent from our core idea of enablijg users to take control of their medical recrds, it's a foundation. Hence, we need to get the auth part right, as we're building for a positive UX, and as such, onboarding must be as seamless and painless as possible. 
+The API will be more robust and will form a core feature in our decentralized EHR solution. The preview is available on the `beta` branch of this repo. While this seems like a tangent from our core idea of enablijg users to take control of their medical records, it's a foundation. Hence, we need to get the auth part right, as we're building for a positive UX, and as such, onboarding must be as seamless and painless as possible. 
 
 ## Error Handling
 
