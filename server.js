@@ -1,41 +1,20 @@
 require("dotenv").config()
 const express = require("express")
+const bodyParser = require('body-parser');
 const cors = require("cors")
 const axios = require("axios")
 const { auth } = require('express-oauth2-jwt-bearer');
 const mongodb = require("mongodb")
-
-// To connect with your mongoDB database
-const mongoose = require('mongoose');
-mongoose.connect(process.env.MONGO_URL, {
-  dbName: 'auth',
-})
-.then(console.log("Connected to DB!"))
-.catch(err => console.log(err))
-
-// Schema for credentials of users
-const CredSchema = new mongoose.Schema({
-  email: {
-    type: String,
-    required: true,
-    unique: true, // Ensures that each email address is unique in the collection
-    trim: true,
-    lowercase: true,
-  },
-  did: {
-    type: String,
-    required: true,
-    unique: true, // Ensures that each DID is unique in the collection
-    trim: true,
-  },
-});
-const Cred = mongoose.model('cred', CredSchema);
-Cred.createIndexes();
+const Cred = require("./models/Cred")
+const ApiError = require('./utils/apiError');
+require("./config/db")
+const defaultRoute = require("./routes/defaultRoute")
 
 const PORT = process.env.PORT || 4000
 const app = express()
 app.use(cors())
-app.use(express.json())
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 
 const jwtCheck = auth({
   audience: 'afya-auth',
@@ -46,32 +25,22 @@ const jwtCheck = auth({
 // enforce on all endpoints
 app.use(jwtCheck)
 
-app.get("/index", (req, res) => {
-  res.send("Hello from index")
-})
+app.use("/", defaultRoute)
 
-app.get("/protected", (req, res) =>
+// Error handling middleware
+app.use((err, req, res, next) =>
 {
-  res.send("Hello from protected route")
-})
-
-app.post("/save-did", async (req, res) => {
-  try {
-    const cred = new Cred(req.body)
-    let response = await cred.save()
-    response = response.toJSON()
-    if (response) {
-      res.send(response)
-      console.log(response)
-    } else {
-      res.send("Email already in use!")
-      console.log("Email already in use!")
-    }
-  } catch (error) {
-    res.send("Something went wrong, try again!")
+  console.log('Error Middleware:\n', err);
+  if (err.name === 'ApiError')
+  {
+    res.status(err.statusCode).json(err);
+  } else
+  {
+    res.status(500).json({ ...err, statusCode: 500 });
   }
-})
+});
 
-app.listen(PORT, () => {
+app.listen(PORT, () =>
+{
   console.log(`Listening on port ${PORT}...`)
 })
