@@ -11,6 +11,7 @@ const { Web5 } = require('@web5/api');
 router.get("/gen-did", async (req, res, next) =>
 {
   const { secretKey } = req.query
+  console.log(req.query)
 
   if (secretKey.length !== 6 || isNaN(Number(secretKey)))
   {
@@ -26,26 +27,34 @@ router.get("/gen-did", async (req, res, next) =>
     const encryptedDID = cipher.encryptDID(did, userSecretKey);
 
     // Send DID to client side for user to copy
-    res.json({ "encryptedDID": did })
+    res.json({ "encryptedDID": encryptedDID })
   } catch (error)
   {
     next(error)
   }
 })
 
-// router.get("/check-did", async (req, res, next) => {
-//   try {
-//     const encryptedDID = "9725f2a37233d12c6681881bcb5c73960cd18de8f0785db2"
-//     const userSecretKey = "nyan-cat"
-//     // Later, when you need to retrieve the DID
-//     const decryptedDID = cipher.decryptDID(encryptedDID, userSecretKey);
-//     console.log('Decrypted DID:', decryptedDID);
-//   } catch (error) {
-//     next(error)
-//   }
-// })
+router.get("/check-did", async (req, res, next) => {
+  const { secretKey,  encryptDID} = req.query
+  console.log(req.query)
+
+  if (secretKey.length !== 6 || isNaN(Number(secretKey)))
+  {
+    throw new ApiError("Invalid credentials!", 400)
+  }
+
+  try {
+    const userSecretKey = secretKey
+    // Later, when you need to retrieve the DID
+    const decryptedDID = cipher.decryptDID(encryptedDID, userSecretKey);
+    console.log('Decrypted DID:', decryptedDID);
+  } catch (error) {
+    next(error)
+  }
+})
 
 
+// Main endpoint for Afya DID API v2
 router.post("/did", async (req, res, next) =>
 {
   try
