@@ -29,9 +29,8 @@ exports.encryptDID = (did, userSecretKey) =>
 // Function to decrypt the DID
 exports.decryptDID = (encryptedDID, userSecretKey) =>
 {
-  // Concatenate the server's key and the user's key to form the composite key
+  // Concatenate server and user keys as Buffer = composite key
   const compositeKey = Buffer.concat([Buffer.from(serverSecretKey, 'utf-8'), Buffer.from(userSecretKey, 'utf-8')]);
-  console.log("Composite Key", compositeKey)
 
    // Extract the IV and encrypted data from the input
   const iv = encryptedDID.slice(0, 16);
