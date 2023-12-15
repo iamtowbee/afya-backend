@@ -33,7 +33,7 @@ app.use((err, req, res, next) =>
   console.log('Error Middleware:\n', err);
   if (err.name === 'ApiError')
   {
-    res.status(err.statusCode).json(err);
+    res.status(err.statusCode).send(err);
   } else
   {
     res.status(500).json({ ...err, statusCode: 500 });

@@ -59,75 +59,79 @@ router.get("/check-did", async (req, res, next) => {
 // Main endpoint for Afya DID API v2
 router.post("/did", async (req, res, next) =>
 {
-  try
+  const { email, secret, action } = req.body
+  console.log(email, secret, action)
+  if (action === "check")
   {
-    if (Object.values(req.body).every(value => value == ""))
-    {
-      throw new ApiError("Invalid or blank input(s)!", 401);
-    }
-
-    // Validate email addresses with regex
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-    // Test the email address against the regex
-    if (emailRegex.test(req.body.email))
-    {
-      throw new ApiError("Invalid credentials (email)!", 401)
-    }
-
-    const { email, secret, action } = req.body
-    if (action === "create")
-    {
+    if (secret === undefined) {
       // Check existing and prepare info for insertion
       const credExists = await Cred.findOne({ email });
       if (credExists)
       {
-        throw new ApiError("User already exists!", 500)
-      }
-
-      //TODO: User secret, request from frontend as a 6-digit PIN (probably alphanumeric for security reasons)✅
-
-      if (secret.length === 6 || isNaN(Number(secret)))
-      {
-        throw new ApiError("Invalid credentials!", 401)
-      }
-
-      // Create and encrypt new DID
-      const { web5, did } = await Web5.connect();
-      const encryptedDID = cipher.encryptDID(did, userSecretKey);
-
-      const newCred = new Cred({
-        email: email,
-        did: encryptedDID
-      })
-
-      // Save encrypted DID to Mongo store
-      await newCred.save();
-      res.status(201).json({
-        "did": did,
-        "message": "Credentials registered successfully!"
-      })
-    }
-    else if (action === "check")
-    {
-      // Check existing and prepare info for insertion
-      const credExists = await Cred.findOne({ email });
-      if (credExists)
-      {
-        res.status(200).send("Credential already exists!");
+        res.status(200).send("Email already exists!");
       } else
       {
-        throw new ApiError("Credential not found!", 404)
+        res.status(404).send("Email not found!")
       }
-    } else
-    {
-      throw new ApiError("Action not specified!", 401)
     }
   }
-  catch (err)
-  {
-    next(err)
-  }
+  // try
+  // {
+  //   if (Object.values(req.body).every(value => value == ""))
+  //   {
+  //     throw new ApiError("Invalid or blank input(s)!", 401);
+  //   }
+
+  //   // Validate email addresses with regex
+  //   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  //   // Test the email address against the regex
+  //   if (emailRegex.test(req.body.email))
+  //   {
+  //     throw new ApiError("Invalid credentials (email)!", 401)
+  //   }
+
+  //   if (action === "create")
+  //   {
+  //     // Check existing and prepare info for insertion
+  //     const credExists = await Cred.findOne({ email });
+  //     if (credExists)
+  //     {
+  //       throw new ApiError("User already exists!", 500)
+  //     }
+
+  //     //TODO: User secret, request from frontend as a 6-digit PIN (probably alphanumeric for security reasons)✅
+
+  //     if (secret.length === 6 || isNaN(Number(secret)))
+  //     {
+  //       throw new ApiError("Invalid credentials!", 401)
+  //     }
+
+  //     // Create and encrypt new DID
+  //     const { web5, did } = await Web5.connect();
+  //     const encryptedDID = cipher.encryptDID(did, userSecretKey);
+
+  //     const newCred = new Cred({
+  //       email: email,
+  //       did: encryptedDID
+  //     })
+
+  //     // Save encrypted DID to Mongo store
+  //     await newCred.save();
+  //     res.status(201).json({
+  //       "did": did,
+  //       "message": "Credentials registered successfully!"
+  //     })
+  //   }
+  //   else else
+  //   {
+  //     throw new ApiError("Action not specified!", 401)
+  //   }
+  // }
+  // catch (err)
+  // {
+  //   next(err)
+  // }
 })
 
 module.exports = router;
