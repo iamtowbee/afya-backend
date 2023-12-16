@@ -8,7 +8,7 @@ const mongodb = require("mongodb")
 const Cred = require("./models/Cred")
 const ApiError = require('./utils/apiError');
 require("./config/db")
-const defaultRoute = require("./routes/defaultRoute")
+const authRoute = require("./routes/authRoute")
 
 const PORT = process.env.PORT || 4000
 const app = express()
@@ -25,7 +25,7 @@ const jwtCheck = auth({
 // enforce on all endpoints
 app.use(jwtCheck)
 
-app.use("/", defaultRoute)
+app.use("/", authRoute)
 
 // Error handling middleware
 app.use((err, req, res, next) =>

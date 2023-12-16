@@ -9,7 +9,7 @@ const CredSchema = new mongoose.Schema({
     trim: true,
     lowercase: true,
   },
-  did: {
+  encryptedDid: {
     type: String,
     required: true,
     unique: true, // Ensures that each DID is unique in the collection

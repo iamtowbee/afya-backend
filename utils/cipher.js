@@ -8,11 +8,11 @@ exports.encryptDID = (did, userSecretKey) =>
 {
   // Concatenate the server's key and the user's key to form the composite key
   const compositeKey = Buffer.concat([Buffer.from(serverSecretKey, 'utf-8'), Buffer.from(userSecretKey, 'utf-8')]);
-  console.log("Composite Key", compositeKey)
+  // console.log("Composite Key", compositeKey)
 
   // Create a SHA-256 hash of the server's secret key and take the first 32 characters as the encryption key
   let encryptionKey = crypto.createHash('sha256').update(String(compositeKey)).digest('base64').slice(0, 32);
-  console.log("Encrypted Composite Key", encryptionKey)
+  // console.log("Encrypted Composite Key", encryptionKey)
 
   // Generate a random initialization vector (IV)
   const iv = crypto.randomBytes(16).toString('hex').slice(0, 16);
