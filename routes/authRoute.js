@@ -92,20 +92,20 @@ router.post("/did", async (req, res, next) =>
     throw new ApiError("Invalid or blank input(s)!", 401);
   }
   
-  const { email, secret, action } = req.body
-  console.log(email, secret, action)
+  const { email, pin, action } = req.body
+  console.log(email, pin, action)
   if (action === "check")
   {
     // Returned response from findEmail using findOne()
-    getCred = findCred(email)
+    getCred = await findCred(email)
 
-    if (secret === undefined) {
+    if (pin === undefined) {
       getCred 
-        ? res.status(200).send("Email found!")
+        ? res.status(200).send("Email found, continue.")
         : res.status(404).send("Email not found!")
     } 
     else { // Secret PIN is present, validating credentials
-      if (secret.length !== 6 || isNaN(Number(secret)))
+      if (pin.length !== 6 || isNaN(Number(pin)))
       {
         throw new ApiError("Invalid credentials!", 400)
       }
@@ -115,7 +115,7 @@ router.post("/did", async (req, res, next) =>
         // Check existing info for retrieval (login action)
         if (getCred) {
           console.log(getCred)
-          const decryptedDID = cipher.decryptDID(encryptedDID, secret);
+          const decryptedDID = cipher.decryptDID(encryptedDID, pin);
           console.log(decryptedDID)
         } 
         else {
@@ -131,7 +131,7 @@ router.post("/did", async (req, res, next) =>
     }
   } 
   else if (action === "create") {
-    if (secret === undefined)
+    if (pin === undefined)
     {
       getCred
         ? res.status(401).send("Email is in use. Try another one..")
@@ -140,15 +140,15 @@ router.post("/did", async (req, res, next) =>
 
     try
     {
-      //TODO: User secret, request from frontend as a 6-digit PIN✅
-      if (secret === undefined || secret.length === 6 || isNaN(Number(secret)))
+      //TODO: User pin, request from frontend as a 6-digit PIN✅
+      if (pin === undefined || pin.length === 6 || isNaN(Number(pin)))
       {
         res.status(404).send("Invalid PIN format!")
       }
 
       // Create and encrypt new DID
       const { web5, did } = await Web5.connect();
-      const encryptedDid = cipher.encryptDID(did, secret);
+      const encryptedDid = cipher.encryptDID(did, pin);
 
       const newCred = new Cred({
         email: email,
@@ -157,6 +157,10 @@ router.post("/did", async (req, res, next) =>
 
       // Save encrypted DID to Mongo store
       await newCred.save();
+      res.status(201).json({
+        "did": did,
+        "message": "Credentials registered successfully!"
+      })
     }
     catch (err)
     {
@@ -168,36 +172,9 @@ router.post("/did", async (req, res, next) =>
         console.log("Error saving credential. Try again!")
       }
     }
+  } else {
+    throw new ApiError("Action not specified!", 401)
   }
-  // try
-  // {
-
-  //   if (action === "create")
-  //   {
-  //     // Check existing and prepare info for insertion
-  //     const credExists = await Cred.findOne({ email });
-  //     if (credExists)
-  //     {
-  //       throw new ApiError("User already exists!", 500)
-  //     }
-
-
-  //     // Save encrypted DID to Mongo store
-  //     await newCred.save();
-  //     res.status(201).json({
-  //       "did": did,
-  //       "message": "Credentials registered successfully!"
-  //     })
-  //   }
-  //   else
-  //   {
-  //     throw new ApiError("Action not specified!", 401)
-  //   }
-  // }
-  // catch (err)
-  // {
-  //   next(err)
-  // }
 })
 
 module.exports = router;
