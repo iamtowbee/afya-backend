@@ -33,12 +33,12 @@ exports.decryptDid = (encryptedDid, userSecretKey) =>
   const compositeKey = Buffer.concat([Buffer.from(serverSecretKey, 'utf-8'), Buffer.from(userSecretKey, 'utf-8')]);
 
    // Extract the IV and encrypted data from the input
-  const iv = encryptedDID.slice(0, 16);
+  const iv = encryptedDid.slice(0, 16);
   const encryptedData = encryptedDid.slice(16);
 
   // Create a SHA-256 hash of the server's secret key and take the first 32 characters as the encryption key
   const encryptionKey = crypto.createHash('sha256').update(String(compositeKey)).digest('base64').slice(0, 32);
-  console.log("Combined User and Server Keys", encryptionKey)
+  // console.log("Combined User and Server Keys", encryptionKey)
 
   // Decryption
   const decipher = crypto.createDecipheriv('aes-256-cbc', encryptionKey, iv);

@@ -64,7 +64,7 @@ const createRecord = async () => {
 
 router.get("/check-did", async (req, res, next) => {
   const { secretKey,  encryptedDID} = req.query
-  console.log(req.query)
+  // console.log(req.query)
 
   if (secretKey.length !== 6 || isNaN(Number(secretKey)))
   {
@@ -74,10 +74,10 @@ router.get("/check-did", async (req, res, next) => {
   try {
     const userSecretKey = secretKey
     // Later, when you need to retrieve the DID
-    const decryptedDID = cipher.decryptDID(encryptedDID, userSecretKey);
+    const decryptedDid = cipher.decryptDid(encryptedDid, userSecretKey);
     
     // Send decrypted DID to client side
-    res.json({ "decryptedDID": decryptedDID })
+    res.json({ "decryptedDid": decryptedDid })
   } catch (error) {
     next(error)
   }
@@ -93,7 +93,7 @@ router.post("/did", async (req, res, next) =>
   }
   
   const { email, pin, action } = req.body
-  console.log(email, pin, action)
+  // console.log(email, pin, action)
   if (action === "check")
   {
     // Returned response from findEmail using findOne()
@@ -102,7 +102,7 @@ router.post("/did", async (req, res, next) =>
     if (pin === undefined) {
       getCred 
         ? res.status(200).send("Email found, continue.")
-        : res.status(404).send("Email not found!")
+        : res.status(404).send("Please check your email.")
     } 
     else { // Secret PIN is present, validating credentials
       if (pin.length !== 6 || isNaN(Number(pin)))
@@ -115,15 +115,16 @@ router.post("/did", async (req, res, next) =>
         // Check existing info for retrieval (login action)
         if (getCred) {
           console.log("Getcred", getCred)
+          const encryptedDid = getCred.encryptedDid
           const decryptedDid = cipher.decryptDid(encryptedDid, pin);
-          console.log(decryptedDid)
+          console.log("decryptedDID", decryptedDid)
+
+          // Send decrypted DID to client side
+          res.status(200).json({ "decryptedDid": decryptedDid })
         } 
         else {
-          throw new ApiError("User already exists!", 500)
+          res.status(404).send("Email not found!")
         }
-        
-        // Send decrypted DID to client side
-        res.json({ "decryptedDid": decryptedDid })
       } catch (error)
       {
         next(error)
