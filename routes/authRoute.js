@@ -114,16 +114,16 @@ router.post("/did", async (req, res, next) =>
       {
         // Check existing info for retrieval (login action)
         if (getCred) {
-          console.log(getCred)
-          const decryptedDID = cipher.decryptDID(encryptedDID, pin);
-          console.log(decryptedDID)
+          console.log("Getcred", getCred)
+          const decryptedDid = cipher.decryptDid(encryptedDid, pin);
+          console.log(decryptedDid)
         } 
         else {
           throw new ApiError("User already exists!", 500)
         }
         
         // Send decrypted DID to client side
-        res.json({ "decryptedDID": decryptedDID })
+        res.json({ "decryptedDid": decryptedDid })
       } catch (error)
       {
         next(error)
@@ -148,7 +148,7 @@ router.post("/did", async (req, res, next) =>
 
       // Create and encrypt new DID
       const { web5, did } = await Web5.connect();
-      const encryptedDid = cipher.encryptDID(did, pin);
+      const encryptedDid = cipher.encryptDid(did, pin);
 
       const newCred = new Cred({
         email: email,
