@@ -83,9 +83,8 @@ router.get("/check-did", async (req, res, next) => {
   }
 })
 
-
 // Main endpoint for Afya DID API v2
-router.post("/did", async (req, res, next) =>
+router.post("/auth", async (req, res, next) =>
 {
   if (Object.values(req.body).every(value => value == ""))
   {
